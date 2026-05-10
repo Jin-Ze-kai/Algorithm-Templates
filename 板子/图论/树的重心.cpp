@@ -1,21 +1,20 @@
 
-vector<int> Centroid(const vector<vector<int>>& adj) {
+vector<int> Centroid(vector<vector<int>>& adj) {
     int n=adj.size();
     vector<int> res;
     vector<int> siz(n,0);
     int maxn=n+1;
 
-    function<void(int,int)> dfs=[&](int u,int fa) {
+    auto dfs=[&](auto&& self,int u,int fa) {
         siz[u]=1;
         int x=0; 
 
         for (int v : adj[u]) {
         	if (v == fa) continue;
-            dfs(v,u);
+            self(self,v,u);
             siz[u]+=siz[v];
             x=max(x,siz[v]);
         }
-
         x=max(x,n-siz[u]);
 
         if (x < maxn) {
@@ -28,6 +27,6 @@ vector<int> Centroid(const vector<vector<int>>& adj) {
         }
     };
     
-    dfs(0,-1);
+    dfs(dfs,0,-1);
     return res;
 }
