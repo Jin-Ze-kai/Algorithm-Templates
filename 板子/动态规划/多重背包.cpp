@@ -8,7 +8,7 @@ void solve()
 		int val,cost,num;
 		cin>>val>>cost>>num;
 		for(int i=0;num-(1<<i)>=0;i++) {
-			int k=(1<<i);
+			int k=(1ll<<i);
 			gra.push_back({cost*k,val*k});
 			num-=k;
 		}
