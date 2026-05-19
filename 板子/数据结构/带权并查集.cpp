@@ -18,6 +18,7 @@ struct DSU {
     int find(int x) {
     	if (x == f[x]) return x;
     	int r=find(f[x]);
+    	//d[x]^=d[f[x]];
     	d[x]+=d[f[x]];
         return f[x]=r;
     }
@@ -27,11 +28,13 @@ struct DSU {
         int fx=find(x);
         int fy=find(y);
         if (fx == fy) {
+        	//if ((d[x]^w) != d[y]) ok=0;
         	if (d[x]+w != d[y]) ok=0;
         	return 0;
         }
         siz[fy]+=siz[fx];
         f[fx]=fy;
+        //d[fx]=d[y]^d[x]^w;
 	    d[fx]=d[y]-d[x]-w;
         cnt--;
         return 1;
