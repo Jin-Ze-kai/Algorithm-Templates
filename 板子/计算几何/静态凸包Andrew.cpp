@@ -1,6 +1,6 @@
 
 // 若用于斜率优化，a 取 {y轴截距, 斜率} 存入 Point 的 {x, y}
-vector<Point> andrew_envelope(vector<Point>& a) {
+vector<Point> andrew(vector<Point>& a) {
     sort(a.begin(), a.end());
     vector<Point> l, h;
     for(const auto& p : a) {
