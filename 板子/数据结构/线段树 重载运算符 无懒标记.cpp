@@ -17,32 +17,32 @@ struct Info {
 
 struct SegTree {
 	int n;
-	vector<Info> info;
-	SegTree(int n_) {
-		n=n_;
-		info.resize(n*4);
+	vector<Info> tree;
+	SegTree(int _) {
+		n=_;
+		tree.resize(n*4);
 	}
 	
-	void Set(int v,int l,int r,int p,int val) {
-		if (l == r) {info[v]=Info(val);return;}
+	void Set(int p,int l,int r,int id,int val) {
+		if (l == r) {tree[p]=Info(val);return;}
 		int m=l+r>>1;
-		if (p <= m) Set(2*v,l,m,p,val);
-		else Set(2*v+1,m+1,r,p,val);
-		info[v]=info[v*2]+info[v*2+1];
+		if (id <= m) Set(2*p,l,m,id,val);
+		else Set(2*p+1,m+1,r,id,val);
+		tree[p]=tree[p*2]+tree[p*2+1];
 	}
 	
-	Info query(int v,int l,int r,int ql,int qr) {
+	Info query(int p,int l,int r,int ql,int qr) {
 		if (ql > r or qr < l) return Info();
-		if (ql <= l and r <= qr) return info[v];
+		if (ql <= l and r <= qr) return tree[p];
 		int m=l+r>>1;
-		return query(2*v,l,m,ql,qr)+query(2*v+1,m+1,r,ql,qr);
+		return query(2*p,l,m,ql,qr)+query(2*p+1,m+1,r,ql,qr);
 	}
 	
-	int kth(int v,int l,int r,int k) {
+	int kth(int p,int l,int r,int k) {
     	if (l == r) return l;
     	int m=l+r>>1;
-    	int cnt=info[2*v].sum;
-		if (k <= cnt) return kth(2*v,l,m,k);
-		else return kth(2*v+1,m+1,r,k-cnt);
+    	int cnt=tree[2*p].sum;
+		if (k <= cnt) return kth(2*p,l,m,k);
+		else return kth(2*p+1,m+1,r,k-cnt);
 	}
 };
