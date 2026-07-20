@@ -18,8 +18,8 @@ struct DSU {
     int find(int x) {
     	if (x == f[x]) return x;
     	int r=find(f[x]);
-    	//d[x]^=d[f[x]];
-    	d[x]+=d[f[x]];
+    	//d[x]^=d[f[x]];// 二元对立性判断
+    	d[x]+=d[f[x]]; // 已知若干元素的差值，判断后续差值是否矛盾
         return f[x]=r;
     }
 	
@@ -38,9 +38,5 @@ struct DSU {
 	    d[fx]=d[y]-d[x]-w;
         cnt--;
         return 1;
-    }
-
-    int esize(int x) {
-        return siz[find(x)];
     }
 };

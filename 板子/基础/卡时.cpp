@@ -1,5 +1,5 @@
 
-const double limit=0.95;
+const double limit=2.90;
 const int maxc=limit*CLOCKS_PER_SEC;
 int step=0;
 

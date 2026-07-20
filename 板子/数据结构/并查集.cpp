@@ -27,8 +27,4 @@ struct DSU {
         cnt--;
         return 1;
     }
-
-    int esize(int x) {
-        return siz[find(x)];
-    }
 };
