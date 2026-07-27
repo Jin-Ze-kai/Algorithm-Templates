@@ -40,4 +40,3 @@ int Lucas(int m,int n)
 	//连续阶乘逆元的线性递推
 	inv[N]=Pow(jc[N],p-2);
 	for(int i=N-1;i>=0;i--) inv[i]=(i+1)*inv[i+1]%p;
-
