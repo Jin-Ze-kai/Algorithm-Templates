@@ -25,6 +25,13 @@ vector<vector<int>> Pow(vector<vector<int>> E,vector<vector<int>> A,int exp) {
 
 
 //(+,*)
+int read(string& s) {
+	int res=0;
+	for(auto c : s) {
+		res=(res*10+c-'0')%(p-1);
+	}
+	return res;
+}
 vector<vector<int>> operator * (const vector<vector<int>>& A,const vector<vector<int>>& B) {
     const int n=A.size();
     vector C(n,vector<int>(n,0));
