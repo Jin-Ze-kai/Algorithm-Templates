@@ -25,20 +25,15 @@ vector<vector<int>> Pow(vector<vector<int>> E,vector<vector<int>> A,int exp) {
 
 
 //(+,*)
-int read(string& s) {
-	int res=0;
-	for(auto c : s) {
-		res=(res*10+c-'0')%(p-1);
-	}
-	return res;
-}
 vector<vector<int>> operator * (const vector<vector<int>>& A,const vector<vector<int>>& B) {
-    const int n=A.size();
-    vector C(n,vector<int>(n,0));
+    int n=A.size();
+    int l=A[0].size();
+    int m=B[0].size();
+    vector C(n,vector<int>(m));
     for (int i=0;i<n;i++) {
-        for (int k=0;k<n;k++) {
+        for (int k=0;k<l;k++) {
             if (A[i][k] == 0) continue;
-            for (int j=0;j<n;j++) {
+            for (int j=0;j<m;j++) {
                 (C[i][j]+=A[i][k]*B[k][j])%=p;
             }
         }
