@@ -9,7 +9,7 @@ vector<vector<int>> operator * (const vector<vector<int>>& A,const vector<vector
         for (int k=0;k<l;k++) {
             if (A[i][k] == 0) continue;
             for (int j=0;j<m;j++) {
-                (C[i][j]+=A[i][k]*B[k][j])%=p;
+                (C[i][j]+=A[i][k]*B[k][j]%p)%=p;
             }
         }
     }
