@@ -1,5 +1,5 @@
 
-//题意是找到同区块前提下的最长段
+//找到同区块前提下的最长段，同区块指完全相同的某一组区间覆盖的区块
 //暴力,n较小时
 mt19937_64 rng {chrono::steady_clock::now().time_since_epoch().count()};
 void solve()
@@ -26,8 +26,7 @@ void solve()
 	cout<<n-ans<<"\n";
 }
 
-//n较大时
-
+//n较大时，离散化
 	int n,m;
 	cin>>n>>m;
 	map<int,u64> f;
@@ -48,3 +47,4 @@ void solve()
 		val^=x;
 		p=id;
 	}
+	
