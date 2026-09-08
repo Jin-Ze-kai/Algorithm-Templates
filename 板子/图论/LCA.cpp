@@ -65,3 +65,7 @@ int query(int u,int v) {
 int dist(int u,int v) {
     return deep[u]+deep[v]-2*deep[query(u,v)];
 }
+
+bool onpath(int z,int x,int y) {
+	return dist(x,z)+dist(z,y) == dist(x,y);
+}
