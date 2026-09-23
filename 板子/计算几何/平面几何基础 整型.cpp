@@ -4,6 +4,8 @@ int sign(int x) {
     return x < 0 ? -1 : 1;
 }
 
+// ========================================================================
+
 struct Point {
     int x, y;
     Point(int x = 0, int y = 0) : x(x), y(y) {}
@@ -16,35 +18,46 @@ struct Point {
         return x == b.x && y == b.y; 
     }
     
+    // 按 x 升序，x 相同按 y 升序 (用于凸包和扫描线)
     bool operator<(const Point& b) const {
         if (x != b.x) return x < b.x; 
         return y < b.y;   
     }
 };
-typedef Point Vector;
+using Vector = Point;
 
 // ========================================================================
 
+// 点积 (内积)
 int dot(Vector a, Vector b) {
     return a.x * b.x + a.y * b.y;
 }
 
+// 叉积 (外积)：表示平行四边形的有向面积
 int cross(Vector a, Vector b) {
     return a.x * b.y - b.x * a.y;
 }
 
-// 极角排序 (完全依赖叉积和象限，无浮点误差)
+// 极角排序 (完全依赖叉积和象限，绝对无浮点误差)
+// 排序后起点位于 x 轴正半轴，逆时针扫一圈
 bool p_cmp(const Vector& a, const Vector& b) {
     int ha = (a.y > 0 || (a.y == 0 && a.x > 0));
     int hb = (b.y > 0 || (b.y == 0 && b.x > 0));
-    if (ha != hb) return ha < hb;
-    return cross(a, b) > 0;
+    if (ha != hb) return ha < hb; // 位于上半平面的排在前面
+    return cross(a, b) > 0;       // 同半平面内，靠左(逆时针)的排在前面
 }
 
-// 获取向量模长的平方 (用于替代原始的距离比较，避免开方运算)
+// 获取向量模长的平方 (替代原始的距离比较，完全避免开方和浮点数)
 int get_length_sq(Vector a) {
     return dot(a, a);
 }
+
+// 两点间的距离平方
+int dist_sq(Point a, Point b) {
+    return get_length_sq(a - b);
+}
+
+// ========================================================================
 
 // 判断点 p 是否在线段 ab 上
 bool on_segment(Point p, Point a, Point b) {
@@ -52,7 +65,7 @@ bool on_segment(Point p, Point a, Point b) {
     return cross(p - a, p - b) == 0 && dot(p - a, p - b) <= 0;
 }
 
-// 判断两线段 a1a2 和 b1b2 是否相交（严格相交或端点相交）
+// 判断两线段 a1a2 和 b1b2 是否相交（包含严格相交或端点相交）
 bool segment_intersection(Point a1, Point a2, Point b1, Point b2) {
     // 步骤一：快速排斥实验 (Bounding Box 检查)
     if (min(a1.x, a2.x) > max(b1.x, b2.x) || max(a1.x, a2.x) < min(b1.x, b2.x) ||
@@ -66,7 +79,15 @@ bool segment_intersection(Point a1, Point a2, Point b1, Point b2) {
     return sign(c1) * sign(c2) <= 0 && sign(c3) * sign(c4) <= 0;
 }
 
-// 求多边形面积的两倍
+// 求线段 ab 上的整点(格点)数量
+// 依赖 <numeric> 库中的 std::gcd (C++17) 或自己实现 gcd
+int lattice_points_on_segment(Point a, Point b) {
+    return std::gcd(abs(a.x - b.x), abs(a.y - b.y)) + 1;
+}
+
+// ========================================================================
+
+// 求多边形有向面积的两倍
 // 多边形顶点的坐标全是整数时，其面积的两倍必定是整数。
 int polygon_area_2(const vector<Point>& p) {
     int res = 0;
@@ -95,4 +116,21 @@ int is_point_in_polygon(Point p, const vector<Point>& poly) {
         if (k < 0 && d2 <= 0 && d1 > 0) wn--;      
     }
     return wn != 0 ? 1 : 0;
+}
+
+
+// 皮克定理 (Pick's Theorem): 2S = 2I + B - 2
+// S 为面积，I 为内部格点数，B 为边界格点数
+// 此函数用于计算给定整型多边形 内部 和 边界 上一共有多少个整数格点
+void picks_theorem(const vector<Point>& p, int& boundary_pts, int& internal_pts) {
+    int area2 = polygon_area_2(p);
+    boundary_pts = 0;
+    int n = p.size();
+    for (int i = 0; i < n; i++) {
+        // 每条边上的格点数等于端点间 gcd，由于端点会被重复计算，这里每条边算 gcd 即可
+        Point a = p[i], b = p[(i + 1) % n];
+        boundary_pts += std::gcd(abs(a.x - b.x), abs(a.y - b.y));
+    }
+    // 根据皮克定理公式推导内部格点数 I = (2S - B + 2) / 2
+    internal_pts = (area2 - boundary_pts + 2) / 2;
 }
